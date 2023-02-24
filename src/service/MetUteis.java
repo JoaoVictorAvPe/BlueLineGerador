@@ -33,7 +33,7 @@ public class MetUteis {
 		return list;
 	}
 	
-	public static void gravarArquivo(List<Semente> list) {
+	public static void escreverArquivo(List<Semente> list) {
 		try(BufferedWriter bw = new BufferedWriter(new FileWriter(pathOrigem))) {
 			for (Semente i : list) {
 				bw.write(i.getNome());

@@ -3,32 +3,40 @@ package aplication;
 import java.util.Scanner;
 
 import entities.Pedido;
-import entities.Semente;
 
 public class Program {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("Digite o nome do solicitante: ");
-		String nome = sc.nextLine();
-		
-		Pedido pedido = new Pedido(nome);
-		
-		for (Semente s : pedido.getPedidoBlueLine()) {
-			System.out.print(s.getNome() + ": ");
-			byte qtd = sc.nextByte();
-			if (qtd == 99) {
-				break;
-			} else {
-				s.setQtd(qtd);
+		Pedido ped = new Pedido();
+		byte resp;
+
+		do {
+			System.out.println("==============");
+			System.out.println("1-Novo Pedido\n2-Gerar Arquivo\n3-Imprimir Pedido\n4-Alterar\n5-Sair");
+			System.out.println("==============");
+			resp = Byte.parseByte(sc.nextLine());
+
+			if (resp == 1) {
+				System.out.println();
+				ped.escreverPedido(sc);
 			}
-		}
-		
-		pedido.setPedidoBlueLine(pedido.getPedidoBlueLine().stream().filter(x -> x.getQtd() != 0).toList());
-		
-		pedido.gerarPedido();
-		
+
+			if (resp == 2) {
+				ped.gerarArquivoDoPedido();
+			}
+
+			if (resp == 3) {
+				System.out.println();
+				ped.imprimirPedido();
+			}
+			
+			if (resp == 4) {
+				ped.alterarItem(sc);
+			}
+
+		} while (resp != 5);
+
 		sc.close();
 	}
 
