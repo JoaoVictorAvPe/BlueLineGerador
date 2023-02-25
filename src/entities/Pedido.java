@@ -66,11 +66,11 @@ public class Pedido {
 	}
 
 	public void continuarPedido(Scanner sc) throws GeradorException {
-		this.iteracao = 0;
 		if (this.solicitante == null) {
 			throw new GeradorException("Sem pedido na memoria, inicie um novo");
 		}
 		for (Semente s : listaBlueLine) {
+			definirMaiorIndice(s);
 			if (!s.isIterado()) {
 				System.out.print(s.getNome() + ": ");
 				byte qtd = Byte.parseByte(sc.nextLine());
@@ -83,20 +83,26 @@ public class Pedido {
 		}
 	}
 
-	public void alterarItem(Scanner sc) {
+	public void alterarItem(Scanner sc) throws GeradorException {
 		if (solicitante == null) {
 			throw new GeradorException("Sem pedido na memoria, inicie um novo");
 		}
 		imprimirIndices();
 		System.out.print("\nIndice a ser alterado: ");
 		byte index = Byte.parseByte(sc.nextLine());
+		if (index >= iteracao || index < 0) {
+			throw new GeradorException("Indice inexistente");
+		}
 		System.out.println(listaBlueLine.get(index));
 		System.out.print("Nova quantidade: ");
 		listaBlueLine.get(index).setQtd(Byte.parseByte(sc.nextLine()));
-		System.out.println("\nAlteração feita com sucesso!");
+		System.out.println("\nAlteracao feita com sucesso!");
 	}
 
 	private void imprimirIndices() {
+		if (iteracao <= 0) {
+			throw new GeradorException("Sem itens no pedido");
+		}
 		System.out.println("\nIndices:");
 		for (byte i = 0; i < iteracao; i++) {
 			System.out.print("Indice: " + i);
@@ -151,9 +157,7 @@ public class Pedido {
 					Semente itemEncontrado = listaBlueLine.stream().filter(x -> x.getNome().equals(info[1])).findFirst().orElse(null);
 					itemEncontrado.setQtd(Byte.parseByte(info[0]));
 					itemEncontrado.setIterado(true);
-					if (listaBlueLine.indexOf(itemEncontrado) > this.iteracao) {
-						this.iteracao = listaBlueLine.indexOf(itemEncontrado);
-					}
+					definirMaiorIndice(itemEncontrado);
 				}
 				line = br.readLine();
 				linhasLidas++;
@@ -162,6 +166,12 @@ public class Pedido {
 			System.out.println("Pedido importado com sucesso");
 		} catch (IOException e) {
 			System.out.println("Erro: " + e.getMessage());
+		}
+	}
+	
+	private void definirMaiorIndice(Semente s) {
+		if (listaBlueLine.indexOf(s) > this.iteracao) {
+			this.iteracao = listaBlueLine.indexOf(s);
 		}
 	}
 
