@@ -163,7 +163,7 @@ public class Pedido {
 				linhasLidas++;
 			}
 			this.iteracao++;
-			System.out.println("Pedido importado com sucesso");
+			System.out.println("\nPedido importado com sucesso");
 		} catch (IOException e) {
 			System.out.println("Erro: " + e.getMessage());
 		}

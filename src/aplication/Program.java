@@ -27,8 +27,10 @@ public class Program {
 				}
 				
 				if (resp == 1) {
-					System.out.println();
+					System.out.println("Instrucoes:\nDigite as quantidades a vontade\nAtribua a quantia 99 para encerrar");
+					sc.nextLine();
 					ped.novoPedido(sc);
+					System.out.println("Pedido salvo");
 				}
 				
 				if (resp == 2) {
@@ -53,9 +55,10 @@ public class Program {
 					ped.importarArquivo();
 				}
 				
-				System.out.println("\npressione ENTER para continuar\n");
-				sc.nextLine();
-				
+				if (resp != 7) {
+					System.out.println("\npressione ENTER para continuar\n");
+					sc.nextLine();
+				}
 			} 
 			catch (NumberFormatException e) {
 				System.out.println("Erro, caractere errado\n");
