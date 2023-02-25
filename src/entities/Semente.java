@@ -5,7 +5,8 @@ import java.util.Objects;
 public class Semente {
 	private String nome;
 	private Byte qtd;
-	
+	private boolean iterado;
+
 	public Semente(String nome) {
 		this.nome = nome;
 		this.qtd = 0;
@@ -31,15 +32,18 @@ public class Semente {
 	public void setQtd(Byte qtd) {
 		this.qtd = qtd;
 	}
-	
+
+	public boolean isIterado() {
+		return iterado;
+	}
+
+	public void setIterado(boolean iterado) {
+		this.iterado = iterado;
+	}
 
 	@Override
 	public String toString() {
-		if (qtd != null) {
-			return "Nome: " + nome + ", Qtd: " + qtd;
-		} else {
-			return "Nome: " + nome;
-		}
+		return "Nome: " + nome + ", Qtd: " + qtd;
 	}
 
 	@Override
@@ -58,7 +62,5 @@ public class Semente {
 		Semente other = (Semente) obj;
 		return Objects.equals(nome, other.nome);
 	}
-	
-	
-	
+
 }

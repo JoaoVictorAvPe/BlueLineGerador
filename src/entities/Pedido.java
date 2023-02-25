@@ -18,7 +18,7 @@ public class Pedido {
 	private String solicitante;
 	private Integer iteracao;
 
-	List<Semente> listaBlueLine = new ArrayList<>(MetUteis.lerArquivo());
+	List<Semente> listaBlueLine;
 
 	public Pedido() {
 		this.data = LocalDateTime.now();
@@ -49,16 +49,18 @@ public class Pedido {
 	}
 
 	public void novoPedido(Scanner sc) throws GeradorException {
+		setListaBlueLine(new ArrayList<>(MetUteis.lerArquivo()));
 		this.iteracao = 0;
 		System.out.print("Nome do solicitante: ");
 		this.solicitante = sc.nextLine();
 		for (Semente s : listaBlueLine) {
 			System.out.print(s.getNome() + ": ");
 			byte qtd = Byte.parseByte(sc.nextLine());
-			if (qtd != 99)
+			if (qtd != 99) {
 				s.setQtd(qtd);
-			else
-				break;
+				s.setIterado(true);
+			}
+			else break;
 			iteracao++;
 		}
 	}
@@ -69,7 +71,7 @@ public class Pedido {
 			throw new GeradorException("Sem pedido na memoria, inicie um novo");
 		}
 		for (Semente s : listaBlueLine) {
-			if (s.getQtd() == 0) {
+			if (!s.isIterado()) {
 				System.out.print(s.getNome() + ": ");
 				byte qtd = Byte.parseByte(sc.nextLine());
 				if (qtd == 99)
@@ -131,10 +133,15 @@ public class Pedido {
 		}
 	}
 
-	public void importarArquivo() {
+	public void importarArquivo() throws GeradorException {
+		setListaBlueLine(new ArrayList<>(MetUteis.lerArquivo()));
 		try (BufferedReader br = new BufferedReader(new FileReader(MetUteis.pathDestino))) {
 			String line = br.readLine();
+			if (line.isEmpty()) {
+				throw new GeradorException("Arquivo vazio, inicie um novo pedido");
+			}
 			byte linhasLidas = 1;
+			this.iteracao = 0;
 			while (line != null) {
 				if (linhasLidas == 2) {
 					this.solicitante = line.substring(13);
@@ -143,10 +150,15 @@ public class Pedido {
 					String[] info = (line.charAt(0) == '1') ? line.split(" caixinha de ") : line.split(" caixinhas de ");
 					Semente itemEncontrado = listaBlueLine.stream().filter(x -> x.getNome().equals(info[1])).findFirst().orElse(null);
 					itemEncontrado.setQtd(Byte.parseByte(info[0]));
+					itemEncontrado.setIterado(true);
+					if (listaBlueLine.indexOf(itemEncontrado) > this.iteracao) {
+						this.iteracao = listaBlueLine.indexOf(itemEncontrado);
+					}
 				}
 				line = br.readLine();
 				linhasLidas++;
 			}
+			this.iteracao++;
 			System.out.println("Pedido importado com sucesso");
 		} catch (IOException e) {
 			System.out.println("Erro: " + e.getMessage());

@@ -63,6 +63,8 @@ public class Program {
 			}
 			catch (NullPointerException e) {
 				System.out.println("Erro: Pedido nao gerado ou indice invalido\n");
+				System.out.println(e.getMessage());
+				e.getStackTrace();
 				sc.nextLine();
 			}
 			catch (GeradorException e) {
